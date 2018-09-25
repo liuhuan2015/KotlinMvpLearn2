@@ -4,6 +4,7 @@ import com.liuh.kotlinmvplearn2.R
 import com.liuh.kotlinmvplearn2.base.BaseFragment
 import com.liuh.kotlinmvplearn2.mvp.contract.HomeContract
 import com.liuh.kotlinmvplearn2.mvp.model.bean.HomeBean
+import com.liuh.kotlinmvplearn2.mvp.presenter.HomePresenter
 
 class HomeFragment : BaseFragment(), HomeContract.View {
 
