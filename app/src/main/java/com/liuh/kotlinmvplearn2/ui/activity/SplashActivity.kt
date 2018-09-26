@@ -7,7 +7,6 @@ import android.graphics.Typeface
 import android.util.Log
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import com.liuh.kotlinmvplearn2.MainActivity
 import com.liuh.kotlinmvplearn2.MyApplication
 import com.liuh.kotlinmvplearn2.R
 import com.liuh.kotlinmvplearn2.base.BaseActivity
