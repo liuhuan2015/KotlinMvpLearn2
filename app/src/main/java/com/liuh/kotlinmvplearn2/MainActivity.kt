@@ -1,6 +1,5 @@
 package com.liuh.kotlinmvplearn2
 
-import android.os.Bundle
 import com.flyco.tablayout.listener.CustomTabEntity
 import com.liuh.kotlinmvplearn2.base.BaseActivity
 import com.liuh.kotlinmvplearn2.ui.fragment.HomeFragment
@@ -21,7 +20,7 @@ class MainActivity : BaseActivity() {
     private var mHomeFragment: HomeFragment? = null
 
     override fun layoutId(): Int {
-        return 0
+        return R.layout.activity_main
     }
 
     override fun initData() {
@@ -36,8 +35,4 @@ class MainActivity : BaseActivity() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
 }
