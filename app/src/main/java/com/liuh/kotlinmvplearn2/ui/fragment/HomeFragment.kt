@@ -1,5 +1,6 @@
 package com.liuh.kotlinmvplearn2.ui.fragment
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat.getColor
 import android.support.v7.widget.LinearLayoutManager
@@ -125,8 +126,8 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         mLayoutStatusView = multipleStatusView
 
         // 状态栏透明以及间距处理
-        StatusBarUtil.darkMode(activity)
-        StatusBarUtil.setPaddingSmart(activity, toolbar)
+        StatusBarUtil.darkMode(activity as Activity)
+        StatusBarUtil.setPaddingSmart(activity as Activity, toolbar)
     }
 
     override fun lazyLoad() {

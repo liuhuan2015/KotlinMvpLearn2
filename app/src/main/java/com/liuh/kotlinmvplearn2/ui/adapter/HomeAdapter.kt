@@ -90,25 +90,23 @@ class HomeAdapter(context: Context, data: ArrayList<HomeBean.Issue.Item>)
 
                 // 取出banner 显示的 img 和title
                 Observable.fromIterable(bannerItemData)
-                        .subscribe({ list ->
+                        .subscribe { list ->
                             bannerFeedList.add(list.data?.cover?.feed ?: "")
                             bannerTitleList.add(list.data?.title ?: "")
-                        })
+                        }
 
                 // 设置banner
                 with(holder) {
                     getView<BGABanner>(R.id.banner).run {
                         setAutoPlayAble(bannerFeedList.size > 1) // 设置自动轮播
                         setData(bannerFeedList, bannerTitleList)
-                        setAdapter(object : BGABanner.Adapter<ImageView, String> {
-                            override fun fillBannerItem(banner: BGABanner?, imageView: ImageView?, feedImageUrl: String?, position: Int) {
-                                GlideApp.with(mContext)
-                                        .load(feedImageUrl)
-                                        .transition(DrawableTransitionOptions().crossFade())
-                                        .placeholder(R.drawable.placeholder_banner)
-                                        .into(imageView)
-                            }
-                        })
+                        setAdapter { _, imageView, feedImageUrl, _ ->
+//                            GlideApp.with(mContext)
+//                                    .load(feedImageUrl)
+//                                    .transition(DrawableTransitionOptions().crossFade())
+//                                    .placeholder(R.drawable.placeholder_banner)
+//                                    .into(imageView)
+                        }
                     }
                 }
 
