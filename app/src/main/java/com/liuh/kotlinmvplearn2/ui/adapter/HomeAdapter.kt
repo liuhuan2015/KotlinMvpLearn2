@@ -2,14 +2,23 @@ package com.liuh.kotlinmvplearn2.ui.adapter
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.support.v4.app.ActivityCompat
+import android.support.v4.app.ActivityOptionsCompat
+import android.support.v4.util.Pair
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import cn.bingoogolapple.bgabanner.BGABanner
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.liuh.kotlinmvplearn2.Constants
 import com.liuh.kotlinmvplearn2.R
+import com.liuh.kotlinmvplearn2.durationFormat
 import com.liuh.kotlinmvplearn2.glide.GlideApp
 import com.liuh.kotlinmvplearn2.mvp.model.bean.HomeBean
+import com.liuh.kotlinmvplearn2.ui.activity.VideoDetailActivity
 import com.liuh.kotlinmvplearn2.view.recyclerview.MyViewHolder
 import com.liuh.kotlinmvplearn2.view.recyclerview.adapter.CommonAdapter
 import io.reactivex.Observable
@@ -96,6 +105,8 @@ class HomeAdapter(context: Context, data: ArrayList<HomeBean.Issue.Item>)
                             bannerTitleList.add(list.data?.title ?: "")
                         }
 
+                Log.e("-----", "bannerFeedList.size: " + bannerFeedList.size)
+
                 // 设置banner
                 with(holder) {
                     getView<BGABanner>(R.id.banner).run {
@@ -130,14 +141,82 @@ class HomeAdapter(context: Context, data: ArrayList<HomeBean.Issue.Item>)
         }
     }
 
-    // 跳到视频播放详情页
-    private fun goToVideoPlayer(activity: Activity, imageView: View?, item: HomeBean.Issue.Item) {
-        // TODO
-    }
-
     // 加载 content item
     private fun setVideoItem(holder: MyViewHolder, item: HomeBean.Issue.Item) {
-        // TODO
+
+        val itemData = item.data
+
+        val defAvatar = R.mipmap.default_avatar
+
+        val cover = itemData?.cover?.feed
+
+        var avatar = itemData?.author?.icon
+
+        var tagText: String? = "#"
+
+        // 作者出处为空，则显示提供者的信息
+        if (avatar.isNullOrEmpty()) {
+            avatar = itemData?.provider?.icon
+        }
+
+        // 加载封面图
+        GlideApp.with(mContext)
+                .load(cover)
+                .placeholder(R.drawable.placeholder_banner)
+                .transition(DrawableTransitionOptions().crossFade())
+                .into(holder.getView(R.id.iv_cover_feed))
+
+        // 如果提供者信息为空，就显示默认
+        if (avatar.isNullOrEmpty()) {
+            GlideApp.with(mContext)
+                    .load(defAvatar)
+                    .placeholder(R.mipmap.default_avatar).circleCrop()
+                    .transition(DrawableTransitionOptions().crossFade())
+                    .into(holder.getView(R.id.iv_avatar))
+        } else {
+            GlideApp.with(mContext)
+                    .load(avatar)
+                    .placeholder(R.mipmap.default_avatar).circleCrop()
+                    .transition(DrawableTransitionOptions().crossFade())
+                    .into(holder.getView(R.id.iv_avatar))
+        }
+        holder.setText(R.id.tv_title, itemData?.title ?: "")
+
+        // 遍历标签
+        itemData?.tags?.take(4)?.forEach {
+            tagText += (it.name + "/")
+        }
+
+        // 格式化时间
+        val timeFormat = durationFormat(itemData?.duration)
+
+        tagText += timeFormat
+
+        holder.setText(R.id.tv_tag, tagText!!)
+
+        holder.setText(R.id.tv_category, "#" + itemData?.category)
+
+        holder.setOnItemClickListener(listener = View.OnClickListener {
+            goToVideoPlayer(mContext as Activity, holder.getView(R.id.iv_cover_feed), item)
+        })
+
+    }
+
+    // 跳到视频播放详情页
+    private fun goToVideoPlayer(activity: Activity, view: View, itemData: HomeBean.Issue.Item) {
+        val intent = Intent(activity, VideoDetailActivity::class.java)
+        intent.putExtra(Constants.BUNDLE_VIDEO_DATA, itemData)
+        intent.putExtra(VideoDetailActivity.TRANSITION, true)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            val pair = Pair<View, String>(view, VideoDetailActivity.IMG_TRANSITION)
+            val activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(activity, pair)
+            ActivityCompat.startActivity(activity, intent, activityOptions.toBundle())
+        } else {
+            activity.startActivity(intent)
+            activity.overridePendingTransition(R.anim.anim_in, R.anim.anim_out)
+        }
     }
 
 }

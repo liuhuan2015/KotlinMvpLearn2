@@ -101,4 +101,7 @@ dependencies {
         exclude group: 'glide-parent'
     }
 
+    // 视屏播放器
+    implementation 'com.shuyu:GSYVideoPlayer:2.1.1'
+
 }

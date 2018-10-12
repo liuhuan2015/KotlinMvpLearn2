@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <ImageView
@@ -37,30 +37,29 @@
 
             <TextView
                 android:id="@+id/tv_title"
-                tools:text="我正在用 Kotlin 写 Android"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:textColor="@color/color_item_title"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                tools:text="我正在用 Kotlin 写 Android" />
 
             <TextView
                 android:id="@+id/tv_tag"
-                tools:text="a/b/c/03`18`"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                tools:text="a/b/c/03`18`" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/tv_category"
-            tools:text="#搞笑"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="15dp" />
-
+            android:layout_marginEnd="15dp"
+            tools:text="#搞笑" />
 
         <View
             android:layout_width="match_parent"

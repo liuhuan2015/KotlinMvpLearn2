@@ -40,7 +40,7 @@ class HomePresenter : BasePresenter<HomeContract.View>(), HomeContract.Presenter
                     val bannerItemList = homeBean.issueList[0].itemList
 
                     bannerItemList.filter { item ->
-                        item.type == "banner" || item.type == "horizontalScrollCard"
+                        item.type == "banner2" || item.type == "horizontalScrollCard"
                     }.forEach { item ->
                         bannerItemList.remove(item)
                     }
