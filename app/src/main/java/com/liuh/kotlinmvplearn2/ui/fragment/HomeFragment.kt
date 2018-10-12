@@ -1,8 +1,12 @@
 package com.liuh.kotlinmvplearn2.ui.fragment
 
 import android.app.Activity
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.ActivityOptionsCompat
 import android.support.v4.content.ContextCompat.getColor
+import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.LinearLayout
@@ -11,6 +15,9 @@ import com.liuh.kotlinmvplearn2.base.BaseFragment
 import com.liuh.kotlinmvplearn2.mvp.contract.HomeContract
 import com.liuh.kotlinmvplearn2.mvp.model.bean.HomeBean
 import com.liuh.kotlinmvplearn2.mvp.presenter.HomePresenter
+import com.liuh.kotlinmvplearn2.net.exception.ErrorStatus
+import com.liuh.kotlinmvplearn2.showToast
+import com.liuh.kotlinmvplearn2.ui.activity.SearchActivity
 import com.liuh.kotlinmvplearn2.ui.adapter.HomeAdapter
 import com.liuh.kotlinmvplearn2.utils.StatusBarUtil
 import com.scwang.smartrefresh.header.MaterialHeader
@@ -121,7 +128,7 @@ class HomeFragment : BaseFragment(), HomeContract.View {
             }
         })
 
-        iv_search.setOnClickListener {}
+        iv_search.setOnClickListener { openSearchActivity() }
 
         mLayoutStatusView = multipleStatusView
 
@@ -130,33 +137,81 @@ class HomeFragment : BaseFragment(), HomeContract.View {
         StatusBarUtil.setPaddingSmart(activity as Activity, toolbar)
     }
 
-    override fun lazyLoad() {
-
+    private fun openSearchActivity() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            // 大于等于Api21（Android 5.0）
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity as Activity, iv_search, iv_search.transitionName)
+            startActivity(Intent(activity, SearchActivity::class.java), options.toBundle())
+        } else {
+            startActivity(Intent(activity, SearchActivity::class.java))
+        }
     }
 
+    override fun lazyLoad() {
+        mPresenter.requestHomeData(num)
+    }
+
+    /**
+     * 设置首页数据
+     */
     override fun setHomeData(homeBean: HomeBean) {
+
+        // adapter
+        mHomeAdapter = HomeAdapter(activity as Activity, homeBean.issueList[0].itemList)
+
+        // 设置 banner 大小
+        mHomeAdapter?.setBannerSize(homeBean.issueList[0].count)
+
+        mRecyclerView.adapter = mHomeAdapter
+        mRecyclerView.layoutManager = linearLayoutManager
+        mRecyclerView.itemAnimator = DefaultItemAnimator()
 
     }
 
     override fun setMoreData(itemList: ArrayList<HomeBean.Issue.Item>) {
-
+        loadingMore = false
+        mHomeAdapter?.addItemData(itemList)
     }
 
+    /**
+     * 显示错误信息
+     */
     override fun showError(msg: String, errorCode: Int) {
+        showToast(msg)
 
+        if (errorCode == ErrorStatus.NETWORK_ERROR) {
+            mLayoutStatusView?.showNoNetwork()
+        } else {
+            mLayoutStatusView?.showError()
+        }
     }
 
+    /**
+     * 显示 Loading （下拉刷新的时候不需要显示 Loading）
+     */
     override fun showLoading() {
-
+        if (!isRefresh) {
+            isRefresh = false
+            mLayoutStatusView?.showLoading()
+        }
     }
 
+    /**
+     * 隐藏 Loading
+     */
     override fun dismissLoading() {
-
+        mRefreshLayout.finishRefresh()
+        mLayoutStatusView?.showContent()
     }
 
 
     fun getColor(colorId: Int): Int {
         return resources.getColor(colorId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mPresenter.detachView()
     }
 
 }

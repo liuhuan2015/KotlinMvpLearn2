@@ -8,6 +8,7 @@ import android.widget.ImageView
 import cn.bingoogolapple.bgabanner.BGABanner
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.liuh.kotlinmvplearn2.R
+import com.liuh.kotlinmvplearn2.glide.GlideApp
 import com.liuh.kotlinmvplearn2.mvp.model.bean.HomeBean
 import com.liuh.kotlinmvplearn2.view.recyclerview.MyViewHolder
 import com.liuh.kotlinmvplearn2.view.recyclerview.adapter.CommonAdapter
@@ -60,9 +61,9 @@ class HomeAdapter(context: Context, data: ArrayList<HomeBean.Issue.Item>)
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         return when (viewType) {
-            ITEM_TYPE_BANNER -> MyViewHolder(mInflater!!.inflate(R.layout.item_home_banner, parent))
-            ITEM_TYPE_TEXT_HEADER -> MyViewHolder(mInflater!!.inflate(R.layout.item_home_header, parent))
-            else -> MyViewHolder(mInflater!!.inflate(R.layout.item_home_content, parent))
+            ITEM_TYPE_BANNER -> MyViewHolder(mInflater!!.inflate(R.layout.item_home_banner, parent, false))
+            ITEM_TYPE_TEXT_HEADER -> MyViewHolder(mInflater!!.inflate(R.layout.item_home_header, parent, false))
+            else -> MyViewHolder(mInflater!!.inflate(R.layout.item_home_content, parent, false))
         }
     }
 
@@ -100,13 +101,15 @@ class HomeAdapter(context: Context, data: ArrayList<HomeBean.Issue.Item>)
                     getView<BGABanner>(R.id.banner).run {
                         setAutoPlayAble(bannerFeedList.size > 1) // 设置自动轮播
                         setData(bannerFeedList, bannerTitleList)
-                        setAdapter { _, imageView, feedImageUrl, _ ->
-//                            GlideApp.with(mContext)
-//                                    .load(feedImageUrl)
-//                                    .transition(DrawableTransitionOptions().crossFade())
-//                                    .placeholder(R.drawable.placeholder_banner)
-//                                    .into(imageView)
-                        }
+                        setAdapter(object : BGABanner.Adapter<ImageView, String> {
+                            override fun fillBannerItem(banner: BGABanner?, imageView: ImageView?, feedImageUrl: String?, position: Int) {
+                                GlideApp.with(mContext)
+                                        .load(feedImageUrl)
+                                        .transition(DrawableTransitionOptions().crossFade())
+                                        .placeholder(R.drawable.placeholder_banner)
+                                        .into(imageView!!)
+                            }
+                        })
                     }
                 }
 
