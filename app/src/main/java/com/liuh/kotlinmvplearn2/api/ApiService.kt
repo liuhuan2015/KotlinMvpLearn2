@@ -24,5 +24,11 @@ interface ApiService {
     @GET
     fun getMoreHomeData(@Url url: String): Observable<HomeBean>
 
+    /**
+     * 根据 item id 获取相关视频
+     */
+    @GET("v4/video/related?")
+    fun getRelatedData(@Query("id") id: Long): Observable<HomeBean.Issue>
+
 
 }

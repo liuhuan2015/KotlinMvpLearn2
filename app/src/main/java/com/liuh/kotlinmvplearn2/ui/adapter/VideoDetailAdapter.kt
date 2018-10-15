@@ -2,12 +2,15 @@ package com.liuh.kotlinmvplearn2.ui.adapter
 
 import android.content.Context
 import android.graphics.Typeface
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.liuh.kotlinmvplearn2.MyApplication
 import com.liuh.kotlinmvplearn2.R
 import com.liuh.kotlinmvplearn2.durationFormat
 import com.liuh.kotlinmvplearn2.glide.GlideApp
+import com.liuh.kotlinmvplearn2.glide.GlideRoundTransform
 import com.liuh.kotlinmvplearn2.mvp.model.bean.HomeBean
 import com.liuh.kotlinmvplearn2.view.recyclerview.MultipleType
 import com.liuh.kotlinmvplearn2.view.recyclerview.MyViewHolder
@@ -28,7 +31,7 @@ class VideoDetailAdapter(mContext: Context, data: ArrayList<HomeBean.Issue.Item>
                     data[position].type == "textCard" ->
                         R.layout.item_video_text_card
 
-                    data[position].type == "textSmallCard" ->
+                    data[position].type == "videoSmallCard" ->
                         R.layout.item_video_small_card
 
                     else ->
@@ -41,6 +44,16 @@ class VideoDetailAdapter(mContext: Context, data: ArrayList<HomeBean.Issue.Item>
 
     init {
         textTypeface = Typeface.createFromAsset(MyApplication.context.assets, "fonts/FZLanTingHeiS-L-GB-Regular.TTF")
+    }
+
+    /**
+     * 添加视频的详细信息
+     */
+    fun addData(item: HomeBean.Issue.Item) {
+        mData.clear()
+        notifyDataSetChanged()
+        mData.add(item)
+        notifyDataSetChanged()
     }
 
     /**
@@ -100,8 +113,77 @@ class VideoDetailAdapter(mContext: Context, data: ArrayList<HomeBean.Issue.Item>
      * 设置视频详情数据
      */
     private fun setVideoDetailInfo(data: HomeBean.Issue.Item, holder: MyViewHolder) {
+        data.data?.title?.let { holder.setText(R.id.tv_title, it) }
 
+        // 视频简介
+        data.data?.description?.let { holder.setText(R.id.expandable_text, it) }
+
+        // 标签
+        holder.setText(R.id.tv_tag, "#${data.data?.category}/${durationFormat(data.data?.duration)}")
+
+        // 喜欢
+        holder.setText(R.id.tv_action_favorites, data.data?.consumption?.collectionCount.toString())
+
+        // 分享
+        holder.setText(R.id.tv_action_share, data.data?.consumption?.shareCount.toString())
+
+        // 评论
+        holder.setText(R.id.tv_action_reply, data.data?.consumption?.replyCount.toString())
+
+        if (data.data?.author != null) {
+            with(holder) {
+                setText(R.id.tv_author_name, data.data.author.name)
+                setText(R.id.tv_author_desc, data.data.author.description)
+                setImagePath(R.id.iv_avatar, object : MyViewHolder.HolderImageLoader(data.data.author.icon) {
+                    override fun loadImage(iv: ImageView, path: String) {
+                        // 加载头像
+                        GlideApp.with(mContext)
+                                .load(path)
+                                .placeholder(R.mipmap.default_avatar).circleCrop()
+                                .into(iv)
+                    }
+
+                })
+            }
+        } else {
+            holder.setViewVisibility(R.id.layout_author_view, View.GONE)
+        }
+
+        with(holder) {
+            getView<TextView>(R.id.tv_action_favorites).setOnClickListener {
+                Toast.makeText(MyApplication.context, "喜欢", Toast.LENGTH_SHORT).show()
+            }
+            getView<TextView>(R.id.tv_action_share).setOnClickListener {
+                Toast.makeText(MyApplication.context, "分享", Toast.LENGTH_SHORT).show()
+            }
+            getView<TextView>(R.id.tv_action_reply).setOnClickListener {
+                Toast.makeText(MyApplication.context, "评论", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
