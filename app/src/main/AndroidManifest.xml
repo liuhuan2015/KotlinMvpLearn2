@@ -39,6 +39,8 @@
 
         <activity android:name=".ui.activity.SearchActivity" />
 
+        <activity android:name=".ui.activity.CategoryDetailActivity" />
+
     </application>
 
 </manifest>

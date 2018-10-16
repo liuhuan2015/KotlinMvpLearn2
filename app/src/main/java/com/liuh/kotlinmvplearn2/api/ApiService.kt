@@ -1,5 +1,6 @@
 package com.liuh.kotlinmvplearn2.api
 
+import com.liuh.kotlinmvplearn2.mvp.model.bean.CategoryBean
 import com.liuh.kotlinmvplearn2.mvp.model.bean.HomeBean
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -41,5 +42,13 @@ interface ApiService {
      */
     @GET
     fun getIssueData(@Url url: String): Observable<HomeBean.Issue>
+
+    /**
+     * 获取分类
+     */
+    @GET("v4/categories")
+    fun getCategory(): Observable<ArrayList<CategoryBean>>
+
+
 
 }
