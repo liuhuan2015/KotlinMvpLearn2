@@ -2,6 +2,7 @@ package com.liuh.kotlinmvplearn2.api
 
 import com.liuh.kotlinmvplearn2.mvp.model.bean.CategoryBean
 import com.liuh.kotlinmvplearn2.mvp.model.bean.HomeBean
+import com.liuh.kotlinmvplearn2.mvp.model.bean.TabInfoBean
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -49,6 +50,11 @@ interface ApiService {
     @GET("v4/categories")
     fun getCategory(): Observable<ArrayList<CategoryBean>>
 
+    /**
+     * 获取全部排行榜的Info（包括 title 和 url）
+     */
+    @GET("v4/rankList")
+    fun getRankList(): Observable<TabInfoBean>
 
 
 }
