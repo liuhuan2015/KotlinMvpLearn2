@@ -1,14 +1,15 @@
 package com.liuh.kotlinmvplearn2.ui.fragment
 
 import android.os.Bundle
+import android.view.View
 import com.liuh.kotlinmvplearn2.R
 import com.liuh.kotlinmvplearn2.base.BaseFragment
 
 /**
  * Date: 2018/10/10 09:14
- * Description:
+ * Description: 我的
  */
-class MineFragment : BaseFragment() {
+class MineFragment : BaseFragment(), View.OnClickListener {
 
     private var mTitle: String? = null
 
@@ -31,6 +32,10 @@ class MineFragment : BaseFragment() {
     }
 
     override fun lazyLoad() {
+
+    }
+
+    override fun onClick(v: View?) {
 
     }
 }
